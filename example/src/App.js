@@ -4,6 +4,8 @@ import ScrollForm from 'react-scroll-form'
 
 export default class App extends Component {
   state = {
+    currentQuestionIndex: 1,
+
     question1: "",
     question2: "",
     question3: "",
@@ -15,6 +17,13 @@ export default class App extends Component {
     this.setState({questions: questionsCopy})
   }
 
+  onScrollEndCallback = (questionIndex) => {
+    console.log("questionIndex",questionIndex, questionIndex+1)
+    if(this["question"+(questionIndex+1).toString()]) {
+      this["question"+(questionIndex+1).toString()].focus()
+    }
+  }
+
 
   render () {
     const questions = [
@@ -23,7 +32,7 @@ export default class App extends Component {
         element: (
           <div>
             <label>Question 1</label>
-            <input value={this.state.question1} onChange={e => this.setState({question1: e.target.value})}/>
+            <input ref={input => this.question1=input} value={this.state.question1} onChange={e => this.setState({question1: e.target.value})}/>
           </div>
         ),
         showCanMoveOnButton: true,
@@ -33,7 +42,7 @@ export default class App extends Component {
         element: (
           <div>
             <label>Question 2</label>
-            <input value={this.state.question2} onChange={e => this.setState({question2: e.target.value})}/>
+            <input ref={input => this.question2=input} value={this.state.question2} onChange={e => this.setState({question2: e.target.value})}/>
           </div>
         ),
         showCanMoveOnButton: true,
@@ -43,7 +52,7 @@ export default class App extends Component {
         element: (
           <div>
             <label>Question #</label>
-            <input value={this.state.question3} onChange={e => this.setState({question3: e.target.value})}/>
+            <input ref={input => this.question3=input} value={this.state.question3} onChange={e => this.setState({question3: e.target.value})}/>
           </div>
         ),
         showCanMoveOnButton: true,
@@ -52,7 +61,10 @@ export default class App extends Component {
 
     return (
       <div>
-        <ScrollForm questions={questions}/>
+        <ScrollForm
+          onScrollEndCallback={this.onScrollEndCallback}
+          questions={questions}
+        />
       </div>
     )
   }

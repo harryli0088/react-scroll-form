@@ -15,7 +15,7 @@ const Question = props => {
           props.question.showCanMoveOnButton ?
           (
             <div style={{opacity: props.question.canMoveOn?1:0}}>
-              <button onClick={props.nextQuestion}>Can move on</button>
+              <button onClick={e => props.goToQuestion(props.index+1)}>Can move on</button>
             </div>
           ) : null
         }

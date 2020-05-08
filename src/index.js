@@ -7,23 +7,63 @@ import Question from "./Question/Question"
 export default class ScrollForm extends Component {
   static propTypes = {
     questions: PropTypes.array.isRequired,
+
+    goToQuestionCallback: PropTypes.func,
+    onScrollEndCallback: PropTypes.func,
+  }
+
+  static defaultProps = {
+    goToQuestionCallback: questionIndex => console.log("questionIndex",questionIndex),
+    onScrollEndCallback: questionIndex => console.log("questionIndex",questionIndex),
   }
 
   state = {
-    currentQuestionIndex: -1,
+    currentQuestionIndex: 0,
   }
+
+  currentQuestionIndex = 0
+  scrollTimeout = null
 
   componentDidMount() {
-    this.nextQuestion()
+    this.goToQuestion(0)
+    window.addEventListener("scroll", this.onScroll)
+    window.addEventListener("keydown", this.onKeyDown)
+  }
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.onScroll)
+    window.removeEventListener("keydown", this.onKeyDown)
   }
 
-  nextQuestion = () => {
-    if(this.state.currentQuestionIndex < this.props.questions.length-1) {
-      this[`div${this.state.currentQuestionIndex+1}`].scrollIntoView({
+  onScroll = () => {
+    clearTimeout(this.scrollTimeout);
+    this.scrollTimeout = setTimeout(this.onScrollEnd, 100);
+  }
+
+  onScrollEnd = () => {
+    console.log("scroll ended")
+    this.props.onScrollEndCallback(this.currentQuestionIndex)
+  }
+
+  onKeyDown = e => {
+    console.log(e)
+    if(e.key==="Tab" && e.shiftKey) {
+      e.preventDefault()
+      this.goToQuestion(this.currentQuestionIndex - 1)
+    }
+    else if(e.key==="Tab" || e.key==="Enter") {
+      e.preventDefault()
+      this.goToQuestion(this.currentQuestionIndex + 1)
+    }
+  }
+
+  goToQuestion = (questionIndex) => {
+    if(questionIndex>=0 && questionIndex<this.props.questions.length) {
+      this[`div${questionIndex}`].scrollIntoView({
         behavior: "smooth"
       })
-      this.setState({currentQuestionIndex: this.state.currentQuestionIndex + 1})
+      this.currentQuestionIndex = questionIndex
 
+      this.props.goToQuestionCallback(questionIndex)
     }
   }
 
@@ -38,7 +78,7 @@ export default class ScrollForm extends Component {
           <div key={i} ref={div => this[`div${i}`] = div}>
             <Question
               index={i}
-              nextQuestion={this.nextQuestion}
+              goToQuestion={this.goToQuestion}
               question={q}
             />
           </div>
