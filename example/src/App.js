@@ -9,7 +9,7 @@ export default class App extends Component {
     question3: "",
   }
 
-  passUpGoToQuestion = goToQuestion => this.goToQuestion = goToQuestion
+  passUpGoToQuestion = goToQuestion => this.goToQuestion = goToQuestion //pass up the function to go to a question
 
   onScrollEndCallback = (questionIndex) => { //we can use this callback to focus on an input
     const refKey = "question"+(questionIndex+1).toString() //manually get the ref key to focus on
@@ -63,8 +63,8 @@ export default class App extends Component {
       <div>
         <ScrollForm
           enterToChangeQuestion
+          goToQuestionCallback={questionindex => {}}
           onScrollEndCallback={this.onScrollEndCallback}
-          onSubmit={e => e.preventDefault()}
           passUpGoToQuestion={this.passUpGoToQuestion}
           questions={questions}
           tabToChangeQuestion

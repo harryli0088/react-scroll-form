@@ -16,9 +16,9 @@ export default class ScrollForm extends Component {
 
   static defaultProps = {
     enterToChangeQuestion: true,
-    goToQuestionCallback: questionIndex => console.log("questionIndex",questionIndex),
+    goToQuestionCallback: questionIndex => {},
     passUpGoToQuestion: goToQuestion => {},
-    onScrollEndCallback: questionIndex => console.log("questionIndex",questionIndex),
+    onScrollEndCallback: questionIndex => {},
     tabToChangeQuestion: true,
   }
 
@@ -26,7 +26,7 @@ export default class ScrollForm extends Component {
   scrollTimeout = null
 
   componentDidMount() {
-    this.props.passUpGoToQuestion(this.goToQuestion)
+    this.props.passUpGoToQuestion(this.goToQuestion) //pass the function to the parent
     this.goToQuestion(0) //initialize to first question
     window.addEventListener("scroll", this.onScroll)
     window.addEventListener("keydown", this.onKeyDown)

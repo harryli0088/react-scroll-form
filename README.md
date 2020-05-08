@@ -1,13 +1,14 @@
 # react-scroll-form
+> mobile-friendly scroll form component written in React
 
-> 
+![Demo](/example/react-scroll-form.gif)
 
-[![NPM](https://img.shields.io/npm/v/react-scroll-form.svg)](https://www.npmjs.com/package/react-scroll-form) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+GIF created using https://www.ffmpeg.org/
 
 ## Install
 
 ```bash
-npm install --save react-scroll-form
+npm install --save harryli0088/react-scroll-form
 ```
 
 ## Usage
@@ -15,16 +16,90 @@ npm install --save react-scroll-form
 ```jsx
 import React, { Component } from 'react'
 
-import MyComponent from 'react-scroll-form'
+import ScrollForm from 'react-scroll-form'
 
-class Example extends Component {
+export default class App extends Component {
+  state = {
+    question1: "",
+    question2: "",
+    question3: "",
+  }
+
+  passUpGoToQuestion = goToQuestion => this.goToQuestion = goToQuestion //pass up the function to go to a question
+
+  onScrollEndCallback = (questionIndex) => { //we can use this callback to focus on an input
+    const refKey = "question"+(questionIndex+1).toString() //manually get the ref key to focus on
+    if(this[refKey]) { //if this ref exists
+      this[refKey].focus() //focus on the element
+    }
+  }
+
+
   render () {
+    const questions = [
+      {
+        element: (
+          <div>
+            <div><label>Question 1</label></div>
+            <div><input autoFocus ref={input => this.question1=input} value={this.state.question1} onChange={e => this.setState({question1: e.target.value})}/></div>
+            <br/>
+            <div style={{opacity: this.state.question1.length>0?1:0}}>
+              <button onClick={e => this.goToQuestion(1)}>Ok</button> <span>press Enter</span>
+            </div>
+          </div>
+        ),
+      },
+      {
+        element: (
+          <div>
+            <div><label>Question 2</label></div>
+            <div><input ref={input => this.question2=input} value={this.state.question2} onChange={e => this.setState({question2: e.target.value})}/></div>
+            <br/>
+            <div style={{opacity: this.state.question2.length>0?1:0}}>
+              <button onClick={e => this.goToQuestion(2)}>Ok</button> <span>press Enter</span>
+            </div>
+          </div>
+        ),
+      },
+      {
+        element: (
+          <div>
+            <div><label>Question #</label></div>
+            <div><input ref={input => this.question3=input} value={this.state.question3} onChange={e => this.setState({question3: e.target.value})}/></div>
+            <br/>
+            <div style={{opacity: this.state.question3.length>0?1:0}}>
+              <button onClick={e => this.goToQuestion(3)}>Ok</button> <span>press Enter</span>
+            </div>
+          </div>
+        ),
+      },
+    ]
+
     return (
-      <MyComponent />
+      <div>
+        <ScrollForm
+          enterToChangeQuestion
+          goToQuestionCallback={questionindex => {}}
+          onScrollEndCallback={this.onScrollEndCallback}
+          passUpGoToQuestion={this.passUpGoToQuestion}
+          questions={questions}
+          tabToChangeQuestion
+        />
+      </div>
     )
   }
 }
 ```
+
+### Props
+- `questions` {Array} Required, expects objects in the format [ {element: React render-able element}, ... ]
+
+Optional props
+- `enterToChangeQuestion` {Boolean} whether to allow the user to move to the next question by pressing Enter, defaults to `true`
+- `goToQuestionCallback` {Function} callback function to run when the goToQuestion function finishes, defaults to `questionIndex => {}`
+- `onScrollEndCallback` {Function} callback function to run when the scroll animation finishes, useful for focusing on inputs with refs, defaults to `questionIndex => {}`
+- `passUpGoToQuestion` {Function} passes up the `goToQuestion` function so your component can trigger a question change, defaults to `goToQuestion => {}`
+- `tabToChangeQuestion` {Boolean} whether to allow the user to move to the next question by pressing Tab, defaults to `true`
 
 ## License
 
