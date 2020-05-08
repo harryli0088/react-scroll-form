@@ -4,23 +4,17 @@ import ScrollForm from 'react-scroll-form'
 
 export default class App extends Component {
   state = {
-    currentQuestionIndex: 1,
-
     question1: "",
     question2: "",
     question3: "",
   }
 
-  setAnswer = (value, questionIndex) => {
-    const questionsCopy = this.state.questions.slice(0)
-    questionsCopy[questionIndex].value = value
-    this.setState({questions: questionsCopy})
-  }
+  passUpGoToQuestion = goToQuestion => this.goToQuestion = goToQuestion
 
-  onScrollEndCallback = (questionIndex) => {
-    console.log("questionIndex",questionIndex, questionIndex+1)
-    if(this["question"+(questionIndex+1).toString()]) {
-      this["question"+(questionIndex+1).toString()].focus()
+  onScrollEndCallback = (questionIndex) => { //we can use this callback to focus on an input
+    const refKey = "question"+(questionIndex+1).toString() //manually get the ref key to focus on
+    if(this[refKey]) { //if this ref exists
+      this[refKey].focus() //focus on the element
     }
   }
 
@@ -28,42 +22,52 @@ export default class App extends Component {
   render () {
     const questions = [
       {
-        canMoveOn: this.state.question1.length > 0,
         element: (
           <div>
-            <label>Question 1</label>
-            <input ref={input => this.question1=input} value={this.state.question1} onChange={e => this.setState({question1: e.target.value})}/>
+            <div><label>Question 1</label></div>
+            <div><input autoFocus ref={input => this.question1=input} value={this.state.question1} onChange={e => this.setState({question1: e.target.value})}/></div>
+            <br/>
+            <div style={{opacity: this.state.question1.length>0?1:0}}>
+              <button onClick={e => this.goToQuestion(1)}>Ok</button> <span>press Enter</span>
+            </div>
           </div>
         ),
-        showCanMoveOnButton: true,
       },
       {
-        canMoveOn: this.state.question2.length > 0,
         element: (
           <div>
-            <label>Question 2</label>
-            <input ref={input => this.question2=input} value={this.state.question2} onChange={e => this.setState({question2: e.target.value})}/>
+            <div><label>Question 2</label></div>
+            <div><input ref={input => this.question2=input} value={this.state.question2} onChange={e => this.setState({question2: e.target.value})}/></div>
+            <br/>
+            <div style={{opacity: this.state.question2.length>0?1:0}}>
+              <button onClick={e => this.goToQuestion(2)}>Ok</button> <span>press Enter</span>
+            </div>
           </div>
         ),
-        showCanMoveOnButton: true,
       },
       {
-        canMoveOn: this.state.question3.length > 0,
         element: (
           <div>
-            <label>Question #</label>
-            <input ref={input => this.question3=input} value={this.state.question3} onChange={e => this.setState({question3: e.target.value})}/>
+            <div><label>Question #</label></div>
+            <div><input ref={input => this.question3=input} value={this.state.question3} onChange={e => this.setState({question3: e.target.value})}/></div>
+            <br/>
+            <div style={{opacity: this.state.question3.length>0?1:0}}>
+              <button onClick={e => this.goToQuestion(3)}>Ok</button> <span>press Enter</span>
+            </div>
           </div>
         ),
-        showCanMoveOnButton: true,
       },
     ]
 
     return (
       <div>
         <ScrollForm
+          enterToChangeQuestion
           onScrollEndCallback={this.onScrollEndCallback}
+          onSubmit={e => e.preventDefault()}
+          passUpGoToQuestion={this.passUpGoToQuestion}
           questions={questions}
+          tabToChangeQuestion
         />
       </div>
     )

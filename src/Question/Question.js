@@ -7,18 +7,7 @@ const Question = props => {
   return (
     <div className={styles.question}>
       <div>
-        <div>
-          {props.question.element}
-        </div>
-
-        {
-          props.question.showCanMoveOnButton ?
-          (
-            <div style={{opacity: props.question.canMoveOn?1:0}}>
-              <button onClick={e => props.goToQuestion(props.index+1)}>Can move on</button>
-            </div>
-          ) : null
-        }
+        {props.question.element}
       </div>
     </div>
   )

@@ -6,26 +6,28 @@ import Question from "./Question/Question"
 
 export default class ScrollForm extends Component {
   static propTypes = {
-    questions: PropTypes.array.isRequired,
-
+    enterToChangeQuestion: PropTypes.bool,
     goToQuestionCallback: PropTypes.func,
     onScrollEndCallback: PropTypes.func,
+    passUpGoToQuestion: PropTypes.func,
+    questions: PropTypes.array.isRequired,
+    tabToChangeQuestion: PropTypes.bool,
   }
 
   static defaultProps = {
+    enterToChangeQuestion: true,
     goToQuestionCallback: questionIndex => console.log("questionIndex",questionIndex),
+    passUpGoToQuestion: goToQuestion => {},
     onScrollEndCallback: questionIndex => console.log("questionIndex",questionIndex),
-  }
-
-  state = {
-    currentQuestionIndex: 0,
+    tabToChangeQuestion: true,
   }
 
   currentQuestionIndex = 0
   scrollTimeout = null
 
   componentDidMount() {
-    this.goToQuestion(0)
+    this.props.passUpGoToQuestion(this.goToQuestion)
+    this.goToQuestion(0) //initialize to first question
     window.addEventListener("scroll", this.onScroll)
     window.addEventListener("keydown", this.onKeyDown)
   }
@@ -40,32 +42,37 @@ export default class ScrollForm extends Component {
   }
 
   onScrollEnd = () => {
-    console.log("scroll ended")
     this.props.onScrollEndCallback(this.currentQuestionIndex)
   }
 
   onKeyDown = e => {
-    console.log(e)
-    if(e.key==="Tab" && e.shiftKey) {
+    if(e.key==="Tab" && e.shiftKey && this.props.tabToChangeQuestion) { //SHIFT + TAB
       e.preventDefault()
-      this.goToQuestion(this.currentQuestionIndex - 1)
+      this.goToQuestion(this.currentQuestionIndex - 1) //go to previous question
     }
-    else if(e.key==="Tab" || e.key==="Enter") {
+    else if(
+      (e.key==="Enter" && this.props.enterToChangeQuestion) || //ENTER
+      (e.key==="Tab" && this.props.tabToChangeQuestion) //TAB
+    ) {
       e.preventDefault()
-      this.goToQuestion(this.currentQuestionIndex + 1)
+      this.goToQuestion(this.currentQuestionIndex + 1) //go to next question
     }
   }
 
   goToQuestion = (questionIndex) => {
-    if(questionIndex>=0 && questionIndex<this.props.questions.length) {
-      this[`div${questionIndex}`].scrollIntoView({
-        behavior: "smooth"
-      })
-      this.currentQuestionIndex = questionIndex
+    if(this.props.questions[questionIndex]) { //if the question index is valid
+      if(this[this.getRefKeyFromIndex(questionIndex)]) { //if the ref for this question exists
+        this[this.getRefKeyFromIndex(questionIndex)].scrollIntoView({ //scroll the element into view
+          behavior: "smooth"
+        })
+        this.currentQuestionIndex = questionIndex //set the new question index
 
-      this.props.goToQuestionCallback(questionIndex)
+        this.props.goToQuestionCallback(questionIndex) //run the callback
+      }
     }
   }
+
+  getRefKeyFromIndex = index => `div${index}`
 
   render() {
     const {
@@ -75,7 +82,7 @@ export default class ScrollForm extends Component {
     return (
       <div className={styles.questionsContainer}>
         {questions.map((q,i) =>
-          <div key={i} ref={div => this[`div${i}`] = div}>
+          <div key={i} ref={div => this[this.getRefKeyFromIndex(i)] = div}>
             <Question
               index={i}
               goToQuestion={this.goToQuestion}
