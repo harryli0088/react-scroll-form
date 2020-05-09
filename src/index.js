@@ -4,8 +4,10 @@ import PropTypes from 'prop-types'
 import styles from './styles.css'
 import Question from "./Question/Question"
 
-const QUESTION_HEIGHT = 500;
-const TRANSITION_SECONDS = 1;
+const QUESTION_HEIGHT = 500
+const TRANSITION_SECONDS = 1
+const WHEEL_SCROLL_THRESHOLD = 200
+const TOUCH_SCROLL_THRESHOLD = 10
 
 export default class ScrollForm extends Component {
   static propTypes = {
@@ -51,12 +53,36 @@ export default class ScrollForm extends Component {
     }
   }
 
+  canScroll = true //only allow the user to increment by one question per wheel
   onWheel = e => {
-    console.log("wheel", e.deltaY)
-    if(Math.abs(e.deltaY) > 200) {
-      this.goToQuestion(this.state.currentQuestionIndex + Math.sign(e.deltaY))
+    if(Math.abs(e.deltaY) > WHEEL_SCROLL_THRESHOLD) { //if we have exceeded the threshold
+      if(this.canScroll) { //if we are allowed to scroll
+        this.goToQuestion(this.state.currentQuestionIndex + Math.sign(e.deltaY))
+        this.canScroll = false //we are not allowed to scroll anymore
+      }
+    }
+    else { //else the wheel just started
+      this.canScroll = true //we can scroll again
     }
   }
+
+  touchStartY = null
+  onTouchStart = e => {
+    this.touchStartY = e.touches[0].screenY //set the starting y position
+  }
+  onTouchMove = e => {
+    if(typeof this.touchStartY === "number") { //if touch start y is still a number
+      const difference = this.touchStartY - e.touches[0].screenY //get the pixel difference between the starting y position and current
+      if(Math.abs(difference) > TOUCH_SCROLL_THRESHOLD) { //if the difference is big enough
+        this.goToQuestion(this.state.currentQuestionIndex + Math.sign(difference))
+        this.touchStartY = null //set the start y to null so that one swipe only increments by one question
+      }
+    }
+  }
+  onTouchEnd = e => {
+    this.touchStartY = null //set the start y to null
+  }
+
 
   goToQuestion = (questionIndex) => {
     // console.log("questionIndex",questionIndex)
@@ -70,32 +96,13 @@ export default class ScrollForm extends Component {
     }
   }
 
-  touchStartY = null
-  onTouchStart = e => {
-    console.log("onTouchStart",e.touches[0].screenY)
-    this.touchStartY = e.touches[0].screenY
-  }
-
-  onTouchMove = e => {
-    if(typeof this.touchStartY === "number") {
-      console.log("onTouchMove",e.touches[0].screenY)
-      const difference = this.touchStartY - e.touches[0].screenY
-      if(Math.abs(difference) > 10) {
-        this.goToQuestion(this.state.currentQuestionIndex + Math.sign(difference))
-        this.touchStartY = null
-      }
-    }
-  }
-
-  onTouchEnd = e => {
-    console.log("onTouchEnd",e)
-    this.touchStartY = null
-  }
 
   render() {
     const {
       questions,
     } = this.props
+
+    const topOffset = (window.innerHeight - QUESTION_HEIGHT) / 2
 
     console.log("this.state.currentQuestionIndex", this.state.currentQuestionIndex)
 
@@ -112,7 +119,7 @@ export default class ScrollForm extends Component {
           <div key={i} style={{
             height: QUESTION_HEIGHT,
             position: "absolute",
-            top: QUESTION_HEIGHT * (i - this.state.currentQuestionIndex),
+            top: QUESTION_HEIGHT * (i - this.state.currentQuestionIndex) + topOffset,
             left: 0,
             right: 0,
             transition: "1s",
