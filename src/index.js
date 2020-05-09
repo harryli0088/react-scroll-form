@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import styles from './styles.css'
 import Question from "./Question/Question"
 
-const QUESTION_HEIGHT = 500
 
 export default class ScrollForm extends Component {
   static propTypes = {
@@ -31,14 +30,28 @@ export default class ScrollForm extends Component {
   }
 
   state = {
+    height: window.innerHeight,
     currentQuestionIndex: 0,
   }
 
-  scrollTimeout = null
+  questionsContainerRef = React.createRef()
 
   componentDidMount() {
+    this.onResize()
+    window.addEventListener('resize', this.onResize)
     this.props.passUpGoToQuestion(this.goToQuestion) //pass the function to the parent
     this.goToQuestion(0) //initialize to first question
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize)
+  }
+
+  onResize = e => {
+    if(this.questionsContainerRef.current) {
+      this.setState({
+        height: this.questionsContainerRef.current.clientHeight
+      })
+    }
   }
 
 
@@ -102,10 +115,12 @@ export default class ScrollForm extends Component {
 
   render() {
     const {
+      height,
+    } = this.state
+
+    const {
       questions,
     } = this.props
-
-    const topOffset = (window.innerHeight - QUESTION_HEIGHT) / 2
 
     console.log("this.state.currentQuestionIndex", this.state.currentQuestionIndex)
 
@@ -117,12 +132,13 @@ export default class ScrollForm extends Component {
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
+        ref={this.questionsContainerRef}
       >
         {questions.map((q,i) =>
           <div key={i} style={{
-            height: QUESTION_HEIGHT,
+            height: height,
             position: "absolute",
-            top: QUESTION_HEIGHT * (i - this.state.currentQuestionIndex) + topOffset,
+            top: height * (i - this.state.currentQuestionIndex),
             left: 0,
             right: 0,
             opacity: i===this.state.currentQuestionIndex ? 1 : 0,
