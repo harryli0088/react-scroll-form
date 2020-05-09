@@ -102,7 +102,7 @@ Optional props
 - `enterToChangeQuestion` {Boolean} whether to allow the user to move to the next question by pressing Enter, defaults to `true`
 - `goToQuestionCallback` {Function} callback function to run when the goToQuestion function finishes, defaults to `questionIndex => {}`
 - `onScrollEndCallback` {Function} callback function to run when the scroll animation finishes, useful for focusing on inputs with refs, defaults to `questionIndex => {}`
-- `passUpGoToQuestion` {Function} passes up the `goToQuestion` function so your component can trigger a question change, defaults to `goToQuestion => {}`
+- `passUpFunctions` {Function} some functions to change the question, defaults to `({goToQuestion, goToPrevQuestion, goToNextQuestion}) => {}`
 - `tabToChangeQuestion` {Boolean} whether to allow the user to move to the next question by pressing Tab, defaults to `true`
 - `touchScrollThreshold` {Number} the touch pixel change in y threshold to move to the next or previous question, defaults to `10`
 - `transitionSeconds` {Number} how long in seconds to take transitioning between questions, defaults to `1`

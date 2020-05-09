@@ -10,7 +10,7 @@ export default class ScrollForm extends Component {
     enterToChangeQuestion: PropTypes.bool,
     goToQuestionCallback: PropTypes.func,
     onScrollEndCallback: PropTypes.func,
-    passUpGoToQuestion: PropTypes.func,
+    passUpFunctions: PropTypes.func,
     questions: PropTypes.array.isRequired,
     tabToChangeQuestion: PropTypes.bool,
     touchScrollThreshold: PropTypes.number,
@@ -22,7 +22,7 @@ export default class ScrollForm extends Component {
     enterToChangeQuestion: true,
     goToQuestionCallback: questionIndex => {},
     onScrollEndCallback: questionIndex => {},
-    passUpGoToQuestion: goToQuestion => {},
+    passUpFunctions: ({goToQuestion, goToPrevQuestion, goToNextQuestion}) => {},
     tabToChangeQuestion: true,
     touchScrollThreshold: 10,
     transitionSeconds: 1,
@@ -39,7 +39,11 @@ export default class ScrollForm extends Component {
   componentDidMount() {
     this.onResize()
     window.addEventListener('resize', this.onResize)
-    this.props.passUpGoToQuestion(this.goToQuestion) //pass the function to the parent
+    this.props.passUpFunctions({ //pass the functions to the parent
+      goToQuestion: this.goToQuestion,
+      goToPrevQuestion: this.goToPrevQuestion,
+      goToNextQuestion: this.goToNextQuestion,
+    })
     this.goToQuestion(0) //initialize to first question
   }
   componentWillUnmount() {
@@ -111,6 +115,9 @@ export default class ScrollForm extends Component {
       setTimeout(this.props.onScrollEndCallback, this.props.transitionSeconds*1000, questionIndex)
     }
   }
+
+  goToPrevQuestion = () => this.goToQuestion(this.state.currentQuestionIndex - 1)
+  goToNextQuestion = () => this.goToQuestion(this.state.currentQuestionIndex + 1)
 
 
   render() {
