@@ -68,6 +68,9 @@ export default class App extends Component {
           passUpGoToQuestion={this.passUpGoToQuestion}
           questions={questions}
           tabToChangeQuestion
+          touchScrollThreshold={10}
+          transitionSeconds={1}
+          wheelScrollThreshold={200}
         />
       </div>
     )
