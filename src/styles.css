@@ -1,4 +1,7 @@
 /* add css styles here (optional) */
 
 .questionsContainer {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
 }
