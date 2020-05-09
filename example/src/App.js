@@ -60,7 +60,7 @@ export default class App extends Component {
     ]
 
     return (
-      <div style={{background: "#eee"}}>
+      <div style={{background: "#eee", height: "100vh"}}>
         <ScrollForm
           enterToChangeQuestion
           goToQuestionCallback={questionindex => {}}

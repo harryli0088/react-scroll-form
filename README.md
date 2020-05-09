@@ -76,7 +76,7 @@ export default class App extends Component {
     ]
 
     return (
-      <div>
+      <div style={{background: "#eee", height: "100vh"}}>
         <ScrollForm
           enterToChangeQuestion
           goToQuestionCallback={questionindex => {}}
@@ -84,11 +84,15 @@ export default class App extends Component {
           passUpGoToQuestion={this.passUpGoToQuestion}
           questions={questions}
           tabToChangeQuestion
+          touchScrollThreshold={10}
+          transitionSeconds={1}
+          wheelScrollThreshold={200}
         />
       </div>
     )
   }
 }
+
 ```
 
 ### Props
@@ -100,6 +104,9 @@ Optional props
 - `onScrollEndCallback` {Function} callback function to run when the scroll animation finishes, useful for focusing on inputs with refs, defaults to `questionIndex => {}`
 - `passUpGoToQuestion` {Function} passes up the `goToQuestion` function so your component can trigger a question change, defaults to `goToQuestion => {}`
 - `tabToChangeQuestion` {Boolean} whether to allow the user to move to the next question by pressing Tab, defaults to `true`
+- `touchScrollThreshold` {Number} the touch pixel change in y threshold to move to the next or previous question, defaults to `10`
+- `transitionSeconds` {Number} how long in seconds to take transitioning between questions, defaults to `1`
+- `wheelScrollThreshold` {Number} the mouse wheel pixel change in y threshold to move to the next or previous question, defaults to `200`
 
 ## License
 

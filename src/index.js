@@ -120,6 +120,7 @@ export default class ScrollForm extends Component {
 
     const {
       questions,
+      transitionSeconds,
     } = this.props
 
     console.log("this.state.currentQuestionIndex", this.state.currentQuestionIndex)
@@ -142,7 +143,7 @@ export default class ScrollForm extends Component {
             left: 0,
             right: 0,
             opacity: i===this.state.currentQuestionIndex ? 1 : 0,
-            transition: "1s",
+            transition: transitionSeconds+"s",
           }}>
             <Question
               index={i}
