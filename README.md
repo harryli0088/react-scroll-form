@@ -25,7 +25,11 @@ export default class App extends Component {
     question3: "",
   }
 
-  passUpGoToQuestion = goToQuestion => this.goToQuestion = goToQuestion //pass up the function to go to a question
+  passUpFunctions = ({goToQuestion, goToPrevQuestion, goToNextQuestion}) => {
+    this.goToQuestion = goToQuestion
+    this.goToPrevQuestion = goToPrevQuestion
+    this.goToNextQuestion = goToNextQuestion
+  }
 
   onScrollEndCallback = (questionIndex) => { //we can use this callback to focus on an input
     const refKey = "question"+(questionIndex+1).toString() //manually get the ref key to focus on
@@ -76,23 +80,40 @@ export default class App extends Component {
     ]
 
     return (
-      <div style={{background: "#eee", height: "100vh"}}>
+      <div style={{background: "#eee", height: "100vh", position: "relative",}}>
         <ScrollForm
           enterToChangeQuestion
           goToQuestionCallback={questionindex => {}}
           onScrollEndCallback={this.onScrollEndCallback}
-          passUpGoToQuestion={this.passUpGoToQuestion}
+          passUpFunctions={this.passUpFunctions}
           questions={questions}
           tabToChangeQuestion
           touchScrollThreshold={10}
           transitionSeconds={1}
           wheelScrollThreshold={200}
         />
+
+        <div style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "2em",
+          background: "white",
+          borderTop: "1px solid gray",
+          display: "flex",
+          flexDirection: "row-reverse",
+          alignItems: "center",
+        }}>
+          <div>
+            <button onClick={e => this.goToPrevQuestion()}>Prev</button>
+            <button onClick={e => this.goToNextQuestion()}>Next</button>
+          </div>
+        </div>
       </div>
     )
   }
 }
-
 ```
 
 ### Props
