@@ -20,7 +20,7 @@ export default class ScrollForm extends Component {
 
   static defaultProps = {
     enterToChangeQuestion: true,
-    goToQuestionCallback: questionIndex => {},
+    goToQuestionCallback: (questionIndex, validQuestionIndex) => {},
     onScrollEndCallback: questionIndex => {},
     passUpFunctions: ({goToQuestion, goToPrevQuestion, goToNextQuestion}) => {},
     tabToChangeQuestion: true,
@@ -105,15 +105,16 @@ export default class ScrollForm extends Component {
 
 
   goToQuestion = (questionIndex) => {
-    // console.log("questionIndex",questionIndex)
-    if(this.props.questions[questionIndex]) { //if the question index is valid
+    const validQuestionIndex = this.props.questions[questionIndex]
+    if(validQuestionIndex) { //if the question index is valid
       this.setState({
         currentQuestionIndex: questionIndex,
       })
 
-      this.props.goToQuestionCallback(questionIndex) //run the callback
       setTimeout(this.props.onScrollEndCallback, this.props.transitionSeconds*1000, questionIndex)
     }
+
+    this.props.goToQuestionCallback(questionIndex,validQuestionIndex) //run the callback
   }
 
   goToPrevQuestion = () => this.goToQuestion(this.state.currentQuestionIndex - 1)

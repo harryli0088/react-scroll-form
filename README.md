@@ -83,7 +83,7 @@ export default class App extends Component {
       <div style={{background: "#eee", height: "100vh", position: "relative",}}>
         <ScrollForm
           enterToChangeQuestion
-          goToQuestionCallback={questionindex => {}}
+          goToQuestionCallback={(questionIndex, validQuestionIndex) => {}}
           onScrollEndCallback={this.onScrollEndCallback}
           passUpFunctions={this.passUpFunctions}
           questions={questions}
@@ -121,7 +121,7 @@ export default class App extends Component {
 
 Optional props
 - `enterToChangeQuestion` {Boolean} whether to allow the user to move to the next question by pressing Enter, defaults to `true`
-- `goToQuestionCallback` {Function} callback function to run when the goToQuestion function finishes, defaults to `questionIndex => {}`
+- `goToQuestionCallback` {Function} callback function to run when the goToQuestion function finishes, defaults to `(questionIndex, validQuestionIndex) => {}`
 - `onScrollEndCallback` {Function} callback function to run when the scroll animation finishes, useful for focusing on inputs with refs, defaults to `questionIndex => {}`
 - `passUpFunctions` {Function} some functions to change the question, defaults to `({goToQuestion, goToPrevQuestion, goToNextQuestion}) => {}`
 - `tabToChangeQuestion` {Boolean} whether to allow the user to move to the next question by pressing Tab, defaults to `true`

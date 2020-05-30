@@ -67,7 +67,7 @@ export default class App extends Component {
       <div style={{background: "#eee", height: "100vh", position: "relative",}}>
         <ScrollForm
           enterToChangeQuestion
-          goToQuestionCallback={questionindex => {}}
+          goToQuestionCallback={(questionIndex, validQuestionIndex) => {}}
           onScrollEndCallback={this.onScrollEndCallback}
           passUpFunctions={this.passUpFunctions}
           questions={questions}
