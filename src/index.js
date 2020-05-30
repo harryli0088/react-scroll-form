@@ -105,7 +105,7 @@ export default class ScrollForm extends Component {
 
 
   goToQuestion = (questionIndex) => {
-    const validQuestionIndex = this.props.questions[questionIndex]
+    const validQuestionIndex = this.props.questions[questionIndex] !== undefined
     if(validQuestionIndex) { //if the question index is valid
       this.setState({
         currentQuestionIndex: questionIndex,
